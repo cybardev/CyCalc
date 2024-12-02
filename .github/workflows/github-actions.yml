@@ -90,17 +90,17 @@ jobs:
           push: true
 
   # Define a deployment job
-#   deploy:
-#     needs: docker
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Deploy Backend to Render
-#         if: github.ref == 'refs/heads/main'
-#         env:
-#           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}
-#         run: curl "$deploy_url"
-#       - name: Deploy Frontend to Render
-#         if: github.ref == 'refs/heads/main'
-#         env:
-#           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND }}
-#         run: curl "$deploy_url"
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Backend to Render
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_BACKEND }}
+        run: curl "$deploy_url"
+      - name: Deploy Frontend to Render
+        if: github.ref == 'refs/heads/main'
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_FRONTEND }}
+        run: curl "$deploy_url"
