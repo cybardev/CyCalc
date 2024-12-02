@@ -5,10 +5,10 @@ name: Calculator App CI/CD Pipeline
 on:
   push:
     branches: [main]
-    paths: ["**/*.py", "**/*.js", ".github/workflows/*.yml"]
+    paths: ["**/*.py", "**/*.js"]
   pull_request:
     branches: [main]
-    paths: ["**/*.py", "**/*.js", ".github/workflows/*.yml"]
+    paths: ["**/*.py", "**/*.js"]
 
   # Allows running this workflow from GitHub Actions tab
   workflow_dispatch:
