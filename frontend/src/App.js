@@ -56,6 +56,8 @@ function App() {
         return "×";
       case "divide":
         return "÷";
+      case "power":
+        return "^";
       default:
         return "";
     }
@@ -107,15 +109,25 @@ function App() {
     if (first_operand === null || current_operation === null) return;
 
     try {
+      let request_payload = {};
+      if (current_operation === "power") {
+        request_payload = {
+          base: first_operand,
+          exponent: parseFloat(calculator_display),
+        };
+      } else {
+        request_payload = {
+          number_1: first_operand,
+          number_2: parseFloat(calculator_display),
+        };
+      }
+
       // Request backend API with operands and operation type to get results
       const api_response = await axios.post(
         `http${process.env.REACT_APP_API_SSL === "true" ? "s" : ""}://${
           process.env.REACT_APP_API_HOST || "localhost"
         }:${process.env.REACT_APP_API_PORT || 5000}/api/${current_operation}`,
-        {
-          number_1: first_operand,
-          number_2: parseFloat(calculator_display),
-        }
+        request_payload
       );
       // Format the returned result from API in case if large number
       const formatted_result = format_large_number(api_response.data.result);
@@ -158,6 +170,18 @@ function App() {
         case "log":
           api_endpoint = "log";
           request_payload = { number: parseFloat(calculator_display) };
+          break;
+        case "sin":
+          api_endpoint = "trig";
+          request_payload = { function: "sin", angle: parseFloat(calculator_display) };
+          break;
+        case "cos":
+          api_endpoint = "trig";
+          request_payload = { function: "cos", angle: parseFloat(calculator_display) };
+          break;
+        case "tan":
+          api_endpoint = "trig";
+          request_payload = { function: "tan", angle: parseFloat(calculator_display) };
           break;
         default:
           return;
@@ -205,40 +229,53 @@ function App() {
           <button id="clear-button" onClick={clear_calculator}>
             C
           </button>
-          <button id="operation-button" onClick={() => perform_advanced_operation("sqrt")}>
-            √
-          </button>
           <button id="operation-button" onClick={() => perform_advanced_operation("log")}>
             log
           </button>
-          <button id="operation-button" onClick={() => handle_operation_click("divide")}>
-            ÷
+          <button id="operation-button" onClick={() => perform_advanced_operation("sqrt")}>
+            √
+          </button>
+          <button id="operation-button" onClick={() => handle_operation_click("power")}>
+            ^
           </button>
 
           <button onClick={() => handle_number_input("7")}>7</button>
           <button onClick={() => handle_number_input("8")}>8</button>
           <button onClick={() => handle_number_input("9")}>9</button>
-          <button id="operation-button" onClick={() => handle_operation_click("multiply")}>
-            ×
+          <button id="operation-button" onClick={() => handle_operation_click("divide")}>
+            ÷
           </button>
 
           <button onClick={() => handle_number_input("4")}>4</button>
           <button onClick={() => handle_number_input("5")}>5</button>
           <button onClick={() => handle_number_input("6")}>6</button>
-          <button id="operation-button" onClick={() => handle_operation_click("subtract")}>
-            -
+          <button id="operation-button" onClick={() => handle_operation_click("multiply")}>
+            ×
           </button>
 
           <button onClick={() => handle_number_input("1")}>1</button>
           <button onClick={() => handle_number_input("2")}>2</button>
           <button onClick={() => handle_number_input("3")}>3</button>
-          <button id="operation-button" onClick={() => handle_operation_click("add")}>
-            +
+          <button id="operation-button" onClick={() => handle_operation_click("subtract")}>
+            -
           </button>
 
           <button onClick={toggle_sign}>+/-</button>
           <button onClick={() => handle_number_input("0")}>0</button>
           <button onClick={() => handle_number_input(".")}>.</button>
+          <button id="operation-button" onClick={() => handle_operation_click("add")}>
+            +
+          </button>
+
+          <button id="operation-button" onClick={() => perform_advanced_operation("sin")}>
+            sin
+          </button>
+          <button id="operation-button" onClick={() => perform_advanced_operation("cos")}>
+            cos
+          </button>
+          <button id="operation-button" onClick={() => perform_advanced_operation("tan")}>
+            tan
+          </button>
           <button id="equals-button" onClick={calculate_result}>
             =
           </button>
