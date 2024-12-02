@@ -1,0 +1,5 @@
+# files to exclude from VCS
+__pycache__/
+.venv/
+.vscode/
+*.bak.*

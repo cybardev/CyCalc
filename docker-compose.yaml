@@ -1,0 +1,22 @@
+# Compose file for dev testing
+
+services:
+  frontend:
+    # Specify the build context for the frontend
+    build: ./frontend
+    # Map the host port to the container port
+    ports:
+      - 3000:3000
+    # Specify dependencies
+    depends_on:
+      - backend
+    # Specify environment variables
+    environment:
+      REACT_APP_API_PORT: 4000 # because macOS occupies 5000
+
+  backend:
+    # Specify the build context for the backend
+    build: ./backend
+    # Map the host port to the container port
+    ports:
+      - "4000:5000"

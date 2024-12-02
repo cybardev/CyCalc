@@ -1,0 +1,29 @@
+# Render deployment Blueprint
+version: "1"
+
+services:
+  # Backend service
+  - name: cycalc-backend
+    type: web
+    plan: free
+    region: ohio
+    runtime: image
+    image:
+      url: ghcr.io/cybardev/cycalc-backend:latest
+  # Frontend service
+  - name: cycalc-frontend
+    type: web
+    plan: free
+    region: ohio
+    runtime: image
+    image:
+      url: ghcr.io/cybardev/cycalc-frontend:latest
+    envVars:
+      - key: REACT_APP_API_SSL
+        value: true
+      - key: REACT_APP_API_PORT
+        value: 443
+      - key: REACT_APP_API_HOST
+        sync: false
+    domains:
+      - calc.cybar.dev
