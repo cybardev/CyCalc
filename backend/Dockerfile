@@ -18,4 +18,4 @@ ENV API_HOST 0.0.0.0
 ENV API_PORT 5000
 
 # Run app.py when the container launches
-CMD [ "gunicorn" , "app:app" ]
+CMD [ "gunicorn", "app:app" ]
