@@ -230,7 +230,7 @@ function App() {
             C
           </button>
           <button id="operation-button" onClick={() => perform_advanced_operation("log")}>
-            log
+            ln
           </button>
           <button id="operation-button" onClick={() => perform_advanced_operation("sqrt")}>
             √
