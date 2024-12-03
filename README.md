@@ -7,6 +7,8 @@
 
 Submission by - [**Sheikh Saad Abdullah**](https://github.com/cybardev)
 
+---
+
 ### Project Overview
 
 **Project description:**
@@ -105,6 +107,8 @@ Calculator application with separate containers for frontend and backend, as an 
 - optimize Docker images by leveraging multi-stage builds, distroless runtime images, compression software, etc.
 - split CI/CD pipeline into multiple files (test, push to registry, deploy, etc.) for readability, modularity, and separation of concerns
 - add functions and mathematical constants to calculator app frontend: variable base logarithms, _e_, _π_, _i_
+
+---
 
 ### Credits
 
