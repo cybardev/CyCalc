@@ -40,73 +40,75 @@ Calculator application with separate containers for frontend and backend, as an 
 
 ### Docker Implementation
 
-**Explain your Dockerfiles:**
-
 - **Backend Dockerfile** (Python API):
-  - Here please explain the `Dockerfile` created for the Python Backend API.
-  - This can be a simple explanation which serves as a reference guide, or revision to you when read back the readme in future.
-
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
+  - use a base Alpine Linux 3.20 image with Python 3.12 runtime set up
+  - set working directory to an empty directory to isolate application from system files
+  - copy application files from current directory into container image in the working directory set up in previous step
+  - install required dependencies from `requirements.txt` using the `pip` package manager
+  - indicate which port(s) are required to be exposed on the host network
+  - specify default values for non-sensitive environment variables (hostname and port number in this case)
+  - run the Flask application using `gunicorn` server
 
 - **Frontend Dockerfile** (React App):
-  - Similar to the above section, please explain the Dockerfile created for the React Frontend Web Application.
+  - use a base Alpine Linux 3.20 image with Node JS 23 runtime set up
+  - set working directory to an empty directory to isolate application from system files
+  - copy package dependency specification files into container image
+  - install required dependencies specified in aforementioned files using the `npm` package manager
+  - copy application files from current directory into container image in the working directory set up in second step
+  - build the React application by running the `build` script invoked by the `npm run` command
+  - indicate which port(s) are required to be exposed on the host network
+  - specify default values for non-sensitive environment variables (API hostname, API port number, and if SSL is enabled in the API in this case)
+  - run the React application by running the `start` script invoked by the `npm run` command
 
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
-
-**Use this section to document your choices and steps for building the Docker images.**
+- **Building and Distributing container images**:
+  - Local development:
+    - run following commands in the directories with the `Dockerfile`s
+    - build: `docker build -t cycalc-frontend:latest .`
+    - run: `docker run --name cycalc-frontend -p 3000:3000 cycalc-frontend:latest`
+    - for backend, replace `frontend` in above commands with `backend`, and change ports from `3000:3000` to `5000:5000` (or `4000:5000` for macOS, since port 5000 is used by an OS component)
+  - Distributing to container registries:
+    - build and upload container images as GitHub Package to GitHub Container Registry automatically in GitHub Actions workflow
 
 ### Docker Compose YAML Configuration
 
-**Break down your `docker-compose.yml` file:**
-
-- **Services:** List the services defined. What do they represent?
-- **Networking:** How do the services communicate with each other?
-- **Volumes:** Did you use any volume mounts for persistent data?
-- **Environment Variables:** Did you define any environment variables for configuration?
-
-**Use this section to explain how your services interact and are configured within `docker-compose.yml`.**
-
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
+- **Services:**
+  - frontend: the React app, using the `frontend` directory as build context, served over the 3000 port on the local host network. Depends on the backend service. Uses an environment variable to specify which port the backend service is exposed on
+  - backend: the Flask API, using the `backend` directory as build context, served over the 4000 port on the local host network
+- **Networking:**
+  - uses the default bridge network to have isolation between containers but has specified ports exposed so containers can communicate over the local host network
+- **Environment Variables:**
+  - for the frontend, I used an environment variable (`REACT_APP_API_PORT`) to specify what the port number of the Flask backend API would be
+  - I did this because the default 5000 port on my host is occupied by an OS component (on macOS)
 
 ### CI/CD Pipeline (YAML Configuration)
 
-**Explain your CI/CD pipeline:**
-
-- What triggers the pipeline (e.g., push to main branch)?
-- What are the different stages (build, test, deploy)?
-- How are Docker images built and pushed to a registry (if applicable)?
-
-**Use this section to document your automated build and deployment process.**
-
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
-
-### Assumptions
-
-- List any assumptions you made while creating the Dockerfiles, `docker-compose.yml`, or CI/CD pipeline.
-
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
+- triggers:
+  - on push or merged pull requests on the main branch, but only if Python (`*.py`) or JavaScript (`*.js`) files change
+  - manually run from the GitHub Actions interface (website or hooks, like the VS Code extension)
+- stages:
+  - frontend and backend parallel build and test stages (one for each)
+  - stage to build container image and push to GitHub Container Registry using official workflow
+  - stage to deploy built images on Render via URL web hooks
 
 ### Lessons Learned
 
-- What challenges did you encounter while working with Docker and CI/CD?
-- What did you learn about containerization and automation?
-
-**Use this section to reflect on your experience and learnings when implementing this project.**
-
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
+- port 5000 is occupied by a component of macOS (Control Center)
+- React only reads envronment variables prefixed with `REACT_APP_`, to avoid leaking sensitive data from the environment
+- learned how Docker Compose works and how it can be used to set up a smooth development experience for multi-container applications
+- learned multi-container app deployment on Render via their infrastructure-as-code (IaC) model - Render Blueprints. It was interesting to note the similarities between this and Docker Compose
+- learned how to deploy to Render using web hooks from CI/CD pipelines, keeping the hook URL hidden as a repository secret
+- connected custom domain to frontend application in Render: [calc.cybar.dev](https://calc.cybar.dev)
 
 ### Future Improvements
 
-- How could you improve your Dockerfiles, `docker-compose.yml`, or CI/CD pipeline?
-- (Optional-Just for personal reflection) Are there any additional functionalities you would like to consider for the calculator application to crate more stages in the CI/CD pipeline or add additional configuration in the Dockerfiles?
+- add testing steps in Dockerfile to prevent building bad images
+- optimize Docker images by leveraging multi-stage builds, distroless runtime images, compression software, etc.
+- split CI/CD pipeline into multiple files (test, push to registry, deploy, etc.) for readability, modularity, and separation of concerns
+- add functions and mathematical constants to calculator app frontend: variable base logarithms, _e_, _π_, _i_
 
-**Use this section to brainstorm ways to enhance your project.**
+### Credits
 
-<!-- Include explanation here -->
-<!-- NOTE: It is not compulsory to include detailed explanations, writing succint concise points would also sufice. Make sure maintain readability and clarity. -->
+- This repository is a continuation of the work done in the [Project](https://github.com/cybardev/ShiftKey-DevOps/tree/master/Project) directory on this repo: [cybardev/ShiftKey-DevOps](https://github.com/cybardev/ShiftKey-DevOps)
+- The aforementioned repository itself is a fork of the ShiftKey Labs repository: [shiftkey-labs/DevOps-Foundations-Course](https://github.com/shiftkey-labs/DevOps-Foundations-Course)
+- Thanks to [Zainuddin Saiyed](https://github.com/Zain-Saiyed) for teaching the course and guiding us through DevOps, containerization, CI/CD, and relevant concepts.
+- Thanks to [ShiftKey](https://shiftkeylabs.ca/) for hosting the certification program on a topic I'm deeply interested in.
