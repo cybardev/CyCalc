@@ -95,7 +95,7 @@ Calculator application with separate containers for frontend and backend, as an 
 ### Lessons Learned
 
 - port 5000 is occupied by a component of macOS (Control Center)
-- React only reads envronment variables prefixed with `REACT_APP_`, to avoid leaking sensitive data from the environment
+- React only reads environment variables prefixed with `REACT_APP_`, to avoid leaking sensitive data from the environment
 - learned how Docker Compose works and how it can be used to set up a smooth development experience for multi-container applications
 - learned multi-container app deployment on Render via their infrastructure-as-code (IaC) model - Render Blueprints. It was interesting to note the similarities between this and Docker Compose
 - learned how to deploy to Render using web hooks from CI/CD pipelines, keeping the hook URL hidden as a repository secret
