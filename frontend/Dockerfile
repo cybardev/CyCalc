@@ -21,8 +21,7 @@ EXPOSE 3000
 
 # Define environment variable
 ENV REACT_APP_API_SSL false
-ENV REACT_APP_API_HOST localhost
-ENV REACT_APP_API_PORT 5000
+ENV REACT_APP_API_URL localhost:5000
 
 # Run the app when the container launches
 CMD [ "npm", "run", "start" ]

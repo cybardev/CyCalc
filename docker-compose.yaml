@@ -12,11 +12,11 @@ services:
       - backend
     # Specify environment variables
     environment:
-      REACT_APP_API_PORT: 4000 # because macOS occupies 5000
+      REACT_APP_API_URL: localhost:4000 # because macOS occupies 5000
 
   backend:
     # Specify the build context for the backend
     build: ./backend
     # Map the host port to the container port
     ports:
-      - "4000:5000"
+      - 4000:5000
