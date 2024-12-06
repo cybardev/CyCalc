@@ -14,8 +14,7 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 
 # Define environment variable
-ENV API_HOST 0.0.0.0
-ENV API_PORT 5000
+ENV API_URL 0.0.0.0:5000
 
 # Run app.py when the container launches
 CMD [ "gunicorn", "app:app" ]

@@ -21,15 +21,10 @@ services:
     envVars:
       - key: REACT_APP_API_SSL
         value: true
-      - key: REACT_APP_API_PORT
+      - key: REACT_APP_API_URL
         fromService:
           name: cycalc-backend
           type: web
-          property: port
-      - key: REACT_APP_API_HOST
-        fromService:
-          name: cycalc-backend
-          type: web
-          property: host
+          property: hostport
     domains:
       - calc.cybar.dev
